@@ -24,8 +24,8 @@
 //--------------------------------------------------|
 //Please enter the latitude and longitude of your   |
 //desired destination:                              |
-  #define GEO_LAT                53.341819
-  #define GEO_LON               -6.238815
+  #define GEO_LAT                53.342302
+  #define GEO_LON               -6.238722
 //--------------------------------------------------|
 
 //--------------------------------------------------|
@@ -34,7 +34,7 @@
 //Please enter the distance (in meters) from your   |
 //destination that you want your LEDs to light up:  |
   #define AT_TARGET_RADIUS          25
-  #define CLOSE_TO_TARGET_RADIUS    40
+  #define CLOSE_TO_TARGET_RADIUS    50
 //--------------------------------------------------|
 
 //--------------------------------------------------|
