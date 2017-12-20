@@ -19,13 +19,6 @@
 // Set GPS_DEBUG to 'false' to turn off echoing the GPS data to the Serial console
 #define GPS_DEBUG false
 
-//define pins and number of neopixels associated with them
-#define PIN_STRIP 9
-#define PIN_BOARD 8
-#define PIN_HEART 6
-#define N_LEDS_STRIP 60
-#define N_LEDS_HEART 18
-
 //--------------------------------------------------|
 //              WAYPOINT CONFIG                     |
 //--------------------------------------------------|
@@ -47,7 +40,11 @@
 //--------------------------------------------------|
 //        BASIC LIGHT CONFIG                        |
 //--------------------------------------------------|
-#define PIN 8
+#define PIN_STRIP 9
+#define PIN_BOARD 8
+#define PIN_HEART 6
+#define N_LEDS_STRIP 60
+#define N_LEDS_HEART 19
 //--------------------------------------------------|
 
 
