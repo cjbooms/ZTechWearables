@@ -19,6 +19,13 @@
 // Set GPS_DEBUG to 'false' to turn off echoing the GPS data to the Serial console
 #define GPS_DEBUG false
 
+//define pins and number of neopixels associated with them
+#define PIN_STRIP 9
+#define PIN_BOARD 8
+#define PIN_HEART 6
+#define N_LEDS_STRIP 60
+#define N_LEDS_HEART 18
+
 //--------------------------------------------------|
 //              WAYPOINT CONFIG                     |
 //--------------------------------------------------|
@@ -44,8 +51,11 @@
 //--------------------------------------------------|
 
 
-// Setup Basic Light Strip
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PIN, NEO_GRB + NEO_KHZ800);
+// Setup neopixels
+Adafruit_NeoPixel pixels_strip = Adafruit_NeoPixel(N_LEDS_STRIP, PIN_STRIP, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels_heart = Adafruit_NeoPixel(N_LEDS_HEART, PIN_HEART, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixel_board = Adafruit_NeoPixel(1, PIN_BOARD, NEO_GRB + NEO_KHZ800);
+
 // Connect to the GPS on the hardware port
 Adafruit_GPS GPS(&GPSSerial);
 
@@ -133,7 +143,7 @@ int calc_bearing(float flat1, float flon1, float flat2, float flon2)
 
 void proximityFunction(float fDist)
 {
-    if ((fDist < AT_TARGET_RADIUS)) { 
+    if ((fDist < AT_TARGET_RADIUS)) {
         gpsFixAtTargetAction();
     }
     else if ((fDist < CLOSE_TO_TARGET_RADIUS)) {
@@ -189,15 +199,15 @@ void noGpsFixAction() {
 }
 
 void gpsFixFarAwayAction() {
-    flashGreen();
+    StageOneFlash();
 }
 
 void gpsFixCloseToTargetAction() {
-    flashTwoColours();
+    StageTwoFlash();
 }
 
 void gpsFixAtTargetAction() {
-    flashMultiColour();
+    StageThreeFlash();
 }
 //--------------------------------------------------|
 
@@ -206,38 +216,79 @@ void gpsFixAtTargetAction() {
 //--------------------------------------------------|
 //        BASIC LIGHT FUNCTIONS                     |
 //--------------------------------------------------|
-void flashMultiColour() {
-    colorWipe(strip.Color(255, 0, 0), 500); // Red
-    colorWipe(strip.Color(0, 255, 0), 500); // Green
-    colorWipe(strip.Color(0, 0, 255), 500); // Blue
-    colorWipe(strip.Color(0, 0, 0), 0); // OFF
+void StageThreeFlash() {
+    flashNeostripRainbowCycle(1);
+    heartBeat(200);
 }
-void flashTwoColours() {
-    colorWipe(strip.Color(0, 255, 0), 500); // Green
-    colorWipe(strip.Color(0, 0, 255), 500); // Blue
-    colorWipe(strip.Color(0, 0, 0), 0); // OFF
+void StageTwoFlash() {
+    flashNeostripRainbowCycle(2);
+    heartBeat(2000);
 }
-void flashGreen() {
-    colorWipe(strip.Color(0, 255, 0), 500); // Green
-    colorWipe(strip.Color(0, 0, 0), 0); // OFF
+void StageOneFlash() {
+    flashNeostripRainbowCycle(3);
 }
 void flashRed() {
-    colorWipe(strip.Color(255, 0, 0), 500); // Red
-    colorWipe(strip.Color(0, 0, 0), 0); // OFF
+    colorWipe(pixel_board.Color(255, 0, 0)); // Red
+    colorWipe(pixel_board.Color(0, 0, 0)); // OFF
 }
-// Fill the dots one after the other with a color
-void colorWipe(uint32_t c, uint8_t wait) {
-    for(uint16_t i=0; i<strip.numPixels(); i++) {
-        strip.setPixelColor(i, c);
-        strip.show();
-        delay(wait);
-    }
-}
+
 void setupLights() {
-    // Start up the LED strip
-    strip.begin();
-    // Update the strip, to start they are all 'off'
-    strip.show();
+    pixels_strip.begin();
+    pixels_heart.begin();
+    pixel_board.begin();
+}
+//--------------------------------------------------|
+
+
+//--------------------------------------------------|
+//          LIGHTS HELPER FUNCTIONS                 |
+//--------------------------------------------------|
+void flashNeostripRainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+
+    for(j=0; j<256; j++) { // 1 cycle of all colors on wheel
+      for(i=0; i< pixels_strip.numPixels(); i++) {
+        pixels_strip.setPixelColor(i, Wheel(((i * 256 / pixels_strip.numPixels()) + j) & 255));
+      }
+
+    pixels_strip.show();
+    delay(wait);
+  }
+}
+
+void heartBeat(int delayBetweenBeats_Ms){
+    colorWipe(pixels_heart.Color(255, 0, 0));
+    delay(100);
+    colorWipe(pixels_heart.Color(0, 0, 0));
+    delay(100);
+    colorWipe(pixels_heart.Color(255, 0, 0));
+    delay(100);
+    colorWipe(pixels_heart.Color(0, 0, 0));
+    delay(delayBetweenBeats_Ms);
+}
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+    WheelPos = 255 - WheelPos;
+    if(WheelPos < 85) {
+      return pixels_strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+    }
+    if(WheelPos < 170) {
+      WheelPos -= 85;
+      return pixels_strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+    }
+    WheelPos -= 170;
+    return pixels_strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+void colorWipe(uint32_t c) {
+  pixel_board.setPixelColor(0, c);
+  pixel_board.show();
+  for(uint16_t i=0; i<pixels_heart.numPixels(); i++) {
+      pixels_heart.setPixelColor(i, c);
+      pixels_heart.show();
+  }
 }
 //--------------------------------------------------|
 
@@ -275,5 +326,3 @@ void printGpsFixData() {
         Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
     }
 }
-
-
