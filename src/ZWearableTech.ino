@@ -17,6 +17,7 @@
 #define GPSSerial Serial1
 
 // Set GPS_DEBUG to 'false' to turn off echoing the GPS data to the Serial console
+#define GPS_RAW_DEBUG false
 #define GPS_DEBUG false
 
 //--------------------------------------------------|
@@ -87,7 +88,7 @@ void loop()                     // run over and over again
     // read data from the GPS in the 'main loop'
     char c = GPS.read();
     // if you want to debug, this is a good time to do it!
-    if (GPS_DEBUG)
+    if (GPS_RAW_DEBUG)
         if (c) Serial.print(c);
     // if a sentence is received, we can check the checksum, parse it...
     if (GPS.newNMEAreceived()) {
@@ -214,8 +215,8 @@ void gpsFixAtTargetAction() {
 //        BASIC LIGHT FUNCTIONS                     |
 //--------------------------------------------------|
 void StageThreeFlash() {
-    flash_neostrip_rainbowCycle(0);
-    heart_beat(0);
+    flashNeostripRainbowCycle(0);
+    heartBeat(0);
 }
 void StageTwoFlash() {
     flashNeostripRainbowCycle(2);
