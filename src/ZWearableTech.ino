@@ -231,8 +231,11 @@ void flashRed() {
 
 void setupLights() {
     pixels_strip.begin();
+    pixels_strip.show();
     pixels_heart.begin();
+    pixels_heart.show();
     pixel_board.begin();
+    pixel_board.show();
 }
 //--------------------------------------------------|
 
