@@ -41,10 +41,10 @@
 //        BASIC LIGHT CONFIG                        |
 //--------------------------------------------------|
 #define PIN_STRIP 9
-#define PIN_BOARD 8
-#define PIN_HEART 6
+#define PIN_BOARD 3
+#define PIN_HEART 8
 #define N_LEDS_STRIP 60
-#define N_LEDS_HEART 19
+#define N_LEDS_HEART 18
 //--------------------------------------------------|
 
 
@@ -214,8 +214,8 @@ void gpsFixAtTargetAction() {
 //        BASIC LIGHT FUNCTIONS                     |
 //--------------------------------------------------|
 void StageThreeFlash() {
-    flashNeostripRainbowCycle(1);
-    heartBeat(200);
+    flash_neostrip_rainbowCycle(0);
+    heart_beat(0);
 }
 void StageTwoFlash() {
     flashNeostripRainbowCycle(2);
