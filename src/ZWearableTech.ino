@@ -42,10 +42,10 @@
 //        BASIC LIGHT CONFIG                        |
 //--------------------------------------------------|
 #define PIN_STRIP 9
-#define PIN_BOARD 3
-#define PIN_HEART 8
+#define PIN_BOARD 8
+#define PIN_HEART 6
 #define N_LEDS_STRIP 60
-#define N_LEDS_HEART 18
+#define N_LEDS_HEART 19
 //--------------------------------------------------|
 
 
@@ -215,12 +215,12 @@ void gpsFixAtTargetAction() {
 //        BASIC LIGHT FUNCTIONS                     |
 //--------------------------------------------------|
 void StageThreeFlash() {
-    flashNeostripRainbowCycle(0);
-    heartBeat(0);
+    pixels_strip.show();
+    heartBeat(50, 400);
 }
 void StageTwoFlash() {
     flashNeostripRainbowCycle(2);
-    heartBeat(2000);
+    heartBeat(100, 2000);
 }
 void StageOneFlash() {
     flashNeostripRainbowCycle(3);
@@ -257,15 +257,15 @@ void flashNeostripRainbowCycle(uint8_t wait) {
   }
 }
 
-void heartBeat(int delayBetweenBeats_Ms){
-    colorWipe(pixels_heart.Color(255, 0, 0));
-    delay(100);
-    colorWipe(pixels_heart.Color(0, 0, 0));
-    delay(100);
-    colorWipe(pixels_heart.Color(255, 0, 0));
-    delay(100);
-    colorWipe(pixels_heart.Color(0, 0, 0));
-    delay(delayBetweenBeats_Ms);
+void heartBeat(int delayBetweenTwoBeats, int delayBeforeTheNextTwoBeats){
+   colorWipe(pixels_heart.Color(255, 0, 0));
+   delay(delayBetweenTwoBeats);
+   colorWipe(pixels_heart.Color(0, 0, 0));
+   delay(delayBetweenTwoBeats);
+   colorWipe(pixels_heart.Color(255, 0, 0));
+   delay(delayBetweenTwoBeats);
+   colorWipe(pixels_heart.Color(0, 0, 0));
+   delay(delayBeforeTheNextTwoBeats);
 }
 
 // Input a value 0 to 255 to get a color value.
