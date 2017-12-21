@@ -25,8 +25,8 @@
 //--------------------------------------------------|
 //Please enter the latitude and longitude of your   |
 //desired destination:                              |
-  #define GEO_LAT                53.342302
-  #define GEO_LON               -6.238722
+  #define GEO_LAT                53.343730
+  #define GEO_LON               -6.238379
 //--------------------------------------------------|
 
 //--------------------------------------------------|
@@ -34,8 +34,8 @@
 //--------------------------------------------------|
 //Please enter the distance (in meters) from your   |
 //destination that you want your LEDs to light up:  |
-  #define AT_TARGET_RADIUS          25
-  #define CLOSE_TO_TARGET_RADIUS    50
+  #define AT_TARGET_RADIUS          35
+  #define CLOSE_TO_TARGET_RADIUS    70
 //--------------------------------------------------|
 
 //--------------------------------------------------|
@@ -197,15 +197,17 @@ void noGpsFixAction() {
 }
 
 void gpsFixFarAwayAction() {
-    StageOneFlash();
+    flashNeostripRainbowCycle(3);
 }
 
 void gpsFixCloseToTargetAction() {
-    StageTwoFlash();
+    flashNeostripRainbowCycle(2);
+    heartBeat(100, 2000);
 }
 
 void gpsFixAtTargetAction() {
-    StageThreeFlash();
+    //pixels_strip.show();
+    heartBeat(50, 400);
 }
 //--------------------------------------------------|
 
@@ -214,17 +216,6 @@ void gpsFixAtTargetAction() {
 //--------------------------------------------------|
 //        BASIC LIGHT FUNCTIONS                     |
 //--------------------------------------------------|
-void StageThreeFlash() {
-    pixels_strip.show();
-    heartBeat(50, 400);
-}
-void StageTwoFlash() {
-    flashNeostripRainbowCycle(2);
-    heartBeat(100, 2000);
-}
-void StageOneFlash() {
-    flashNeostripRainbowCycle(3);
-}
 void flashRed() {
     colorWipe(pixel_board.Color(255, 0, 0)); // Red
     colorWipe(pixel_board.Color(0, 0, 0)); // OFF
